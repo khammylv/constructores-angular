@@ -1,0 +1,59 @@
+<header
+  class="fixed top-0 left-60 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+  <h1 class="text-xl font-bold text-gray-800">Panel de Arquitectos</h1>
+  <div class=" grid grid-cols-3    py-3 ">
+    <ng-container [ngSwitch]="isActive">
+      <app-button-icon *ngSwitchCase="true" [matBadge]="numeroNotificaciones" icon="notifications_active"
+        color="mat-color" (clicked)="verNotificacion()"></app-button-icon>
+      <app-button-icon *ngSwitchCase="false" icon="notifications" color="mat-color"
+        (clicked)="verNotificacion()"></app-button-icon>
+    </ng-container>
+
+    <ng-container *ngIf="isNotificationActive">
+      <div data-popover="notifications-menu" data-popover-placement="bottom" class="absolute z-10 flex min-w-[180px] flex-col gap-2 overflow-auto rounded-md border border-blue-gray-50 bg-white p-3 font-sans text-sm font-normal text-blue-gray-500
+           top-10 right-20 shadow-md shadow-blue-gray-200">
+        <div *ngFor="let n of notifications">
+          <button
+            class="flex w-full cursor-pointer select-none items-center gap-4 rounded-md px-3 py-2 pr-8 pl-2 text-start leading-tight outline-none transition-all hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900"
+            (click)="markAsRead(n.id)">
+            <div class="w-2 h-2 mt-1 me-4 rounded-full " 
+            [ngClass]="{
+            'bg-green-600': n.type === 'COMPLETADO',
+            'bg-red-600': n.type === 'ERROR',
+            
+          }"
+            ></div>
+            <div class="flex flex-col gap-1">
+              <p class="block font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
+                <span class="font-medium text-blue-gray-900">{{ n.title }}</span> {{ n.message }}
+              </p>
+              <p class="flex items-center gap-1 font-sans text-xs font-light text-gray-600 antialiased">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="h-3 w-3">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z">
+                  </path>
+                </svg>
+                {{ getTimeAgo(n.timestamp) }}
+              </p>
+            </div>
+
+            <button class="ml-auto text-gray-500 hover:text-red-500" (click)="remove(n.id); $event.stopPropagation()">
+              ✕
+            </button>
+          </button>
+        </div>
+        
+         <ng-container  *ngIf="numeroNotificaciones == 0">
+    <app-information message="No existen notificaciones para mostrar."></app-information>
+
+   </ng-container>
+  
+        
+      </div>
+    </ng-container>
+  
+
+  </div>
+
+</header>

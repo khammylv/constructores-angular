@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ButtonIconComponent } from '../button-icon/button-icon.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationTriggerService } from '../../services/notification-trigger.service';
 import { AppNotification } from '../../models/notification.model';
 import { combineLatest, Subject, Subscription, takeUntil } from 'rxjs';
 import { InformationComponent } from '../information/information.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -14,27 +15,34 @@ import { InformationComponent } from '../information/information.component';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent  implements OnInit, OnDestroy {
-  constructor(private notificationService: NotificationTriggerService) {}
+  constructor(private notificationService: NotificationTriggerService,private authService : AuthService) {}
 
   numeroNotificaciones!: number;
   isNotificationActive: boolean = false;
   isActive = false;
+  isAdmin!: boolean;
   notifications: AppNotification[] = [];
   private destroy$ = new Subject<void>();
+ 
 
   ngOnInit(): void {
  
 combineLatest([
       this.notificationService.bell$,
       this.notificationService.count$,
-      this.notificationService.notifications$
+      this.notificationService.notifications$,
+     
     ]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(([active, count, list]) => {
       this.isActive = active;
       this.numeroNotificaciones = count;
       this.notifications = list;
+     
     });
+  
+    this.isAdmin = this.authService.getisAdmin();
+  
   }
 
   verNotificacion() {

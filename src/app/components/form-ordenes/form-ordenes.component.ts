@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { MatDialogRef } from '@angular/material/dialog';
 import { SnackbarService } from '../../services/snackbar.service';
 import { SelectOption } from '../../models/menuItems.model';
-import { INFO_CLASS } from '../../utils/constans';
+import { INFO_CLASS, WARNING_CLASS } from '../../utils/constans';
 
 @Component({
   selector: 'app-form-ordenes',
@@ -31,11 +31,11 @@ constructor(
 
   actionForm!: FormGroup;
   opcionesConstruccion: SelectOption[] = [
-    { label: 'CASA', value: 'Casa' },
-    { label: 'LAGO', value: 'Lago' },
-    { label: 'CANCHA DE FÚTBOL', value: 'Cancha de Fútbol' },
-    { label: 'EDIFICIO', value: 'Edificio' },
-    { label: 'GIMNASIO', value: 'Gimnasio' },
+    { label: 'Casa', value: 'CASA' },
+    { label: 'Lago', value: 'LAGO' },
+    { label: 'Cancha de fútbol', value: 'CANCHA DE FÚTBOL' },
+    { label: 'Edificio', value: 'EDIFICIO' },
+    { label: 'Gimnasio', value: 'GIMNASIO' },
   ];
   ngOnInit(): void {
     this.buildForm();
@@ -55,7 +55,7 @@ constructor(
         'Agregue todos los campos del formulario',
         'Info',
         3000,
-        INFO_CLASS
+        WARNING_CLASS
       );
       return;
     }

@@ -1,0 +1,65 @@
+<section class="min-h-screen bg-gray-100 px-4 text-gray-600 antialiased">
+
+
+  <div class="flex h-full flex-col justify-center">
+    <div class="mx-auto w-full max-w-3xl rounded-sm border border-gray-200 bg-white shadow-lg">
+      <header class="border-b border-gray-100 px-5 py-4 flex justify-between items-center">
+        <div class="font-semibold text-gray-800">Inventario General</div>
+
+
+      </header>
+     
+
+      <div class="overflow-x-auto p-3">
+        <table class="w-full table-auto">
+          <thead class="bg-gray-50 text-xs font-semibold uppercase text-gray-400">
+            <tr>
+              <th class="p-2 text-center">Sel</th>
+              <th class="p-2 text-left">Material</th>
+              <th class="p-2 text-left">Cantidad Inicial</th>
+              <th class="p-2 text-left">Faltante</th>
+            </tr>
+          </thead>
+          
+          <ng-container *ngIf="inventarioInicial && (objectKeys(inventarioInicial).length > 0)">
+            <tbody class="divide-y divide-gray-100 text-sm">
+              <tr *ngFor="let material of materiales" [ngClass]="{ 'bg-blue-50': seleccionados.includes(material) }">
+                <!-- Checkbox -->
+                <td class="p-2 text-center">
+                  <input type="checkbox" class="h-5 w-5 text-blue-500 rounded"
+                    [checked]="seleccionados.includes(material)" (change)="toggleSeleccion(material)" />
+                </td>
+
+                <!-- Nombre del material -->
+                <td class="p-2 font-medium text-gray-800">{{ material }}</td>
+
+                <!-- Cantidad inicial -->
+                <td class="p-2 text-left">{{ inventarioInicial[material] }}</td>
+
+                <!-- Faltante -->
+                <td class="p-2 text-left font-medium" [ngClass]="{
+                  'text-green-600': inventarioFaltante[material] === 0,
+                  'text-red-500': inventarioFaltante[material] > 0
+                }">
+                  {{ inventarioFaltante[material] }}
+                </td>
+              </tr>
+            </tbody>
+          </ng-container>
+          
+
+        </table>
+      </div>
+
+      <div class="flex justify-end space-x-4 border-t border-gray-100 px-5 py-4 text-lg font-bold">
+        <button (click)="sendData()"
+          class="group relative h-8 w-30 overflow-hidden rounded-2xl bg-sky-500 text-sm font-bold text-white cursor-pointer">
+          Add Materiales
+          <div
+            class="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-100 group-hover:bg-white/30">
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,7 @@
+{
+  "redhatDependencyAnalytics.ignoredDirectories": [
+    "node_modules",
+    ".angular",
+    "dist"
+  ]
+}

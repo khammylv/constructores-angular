@@ -13,12 +13,13 @@ import {
   OrdenConstruccion,
 } from '../../models/ordenConstruccion.model';
 import { FormOrdenesComponent } from '../../components/form-ordenes/form-ordenes.component';
-import { SseClient } from 'ngx-sse-client';
 import { EventSourceService } from '../../services/event-source.service';
 import { Pagination } from '../../models/Pagination.model';
 import { PaginatorTableComponent } from '../../components/paginator-table/paginator-table.component';
 import { InformationComponent } from '../../components/information/information.component';
 import { RefreshService } from '../../services/refresh.service';
+import { AuthService } from '../../services/auth.service';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-ordenes',
@@ -28,6 +29,7 @@ import { RefreshService } from '../../services/refresh.service';
     ColorEstadoPipe,
     PaginatorTableComponent,
     InformationComponent,
+    CapitalizePipe
   ],
   templateUrl: './ordenes.component.html',
   styleUrl: './ordenes.component.css',
@@ -35,18 +37,23 @@ import { RefreshService } from '../../services/refresh.service';
 export class OrdenesComponent implements OnInit, OnDestroy {
   constructor(
     private dialogService: DialogService,
-    private notificationService: NotificationTriggerService,
+    
     private ordenesService: OrdenesService,
-    private snackbar: SnackbarService,
+    
     private eventSourceService: EventSourceService,
-    private refreshService: RefreshService
+    private refreshService: RefreshService,
+    private authService : AuthService
   ) {}
 
   private destroy$ = new Subject<void>();
   ordenes!: OrdenConstruccion[];
   pagination!: Pagination;
+  isAdmin!: boolean;
 
   ngOnInit(): void {
+
+    // const token = authService.getToken();
+ // console.log("en interceptor =>",token)
     //private ordenesService: OrdenesService
     this.pagination = {
       pageIndex: 0,
@@ -62,6 +69,7 @@ this.refreshService.refresh$
         
         this.getAllorder(this.pagination.pageIndex, this.pagination.pageSize);
       });
+  this.isAdmin = this.authService.getisAdmin();
   }
 
   addOrden(): void {
@@ -79,7 +87,7 @@ this.refreshService.refresh$
           //   'sent you a message'
           // );
           // this.notificationService.incrementCount();
-          // Aquí haces la lógica con result.tipo, result.x, result.y
+          
         }
       });
   }
@@ -110,7 +118,7 @@ this.refreshService.refresh$
       .pipe(
         takeUntil(this.destroy$),
         tap((data: EstadoOrdenResponse) => {
-          console.log('Orden creada:', data.jobId);
+          
           this.consultarOrden(data.jobId);
         }),
         catchError((error: any) => {

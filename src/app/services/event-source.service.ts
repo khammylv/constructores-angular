@@ -12,8 +12,8 @@ export class EventSourceService {
   constructor(
     private notificationService: NotificationTriggerService,
     private sseClient: SseClient,
-     private pdfServices: PdfService,
-       private refreshService: RefreshService
+    private pdfServices: PdfService,
+    private refreshService: RefreshService
   ) {}
   baseUrl = 'http://localhost:8080/api';
   acciones: Record<string, (data: any) => void> = {
@@ -40,7 +40,30 @@ export class EventSourceService {
       );
     },
   };
+  accionesInventario: Record<string, (data: any) => void> = {
+    PENDIENTE: (data) => {
+      console.log('Progreso:', data);
+    },
+    COMPLETADO: (data) => {
+      this.notificationService.addNotification(
+        'Inventario',
+        `Su inventario ha sido actuaslizado exitosamente.`,
+        'COMPLETADO'
+      );
+      this.refreshService.triggerRefreshInventario();
+    },
+    ERROR: (data) => {
+      const mensaje = data.mensaje.includes(':')
+        ? data.mensaje.split(':')[1].trim()
+        : data.mensaje;
 
+      this.notificationService.addNotification(
+        `${data.status}`,
+        mensaje,
+        'ERROR'
+      );
+    },
+  };
   consultarOrden(jobId: string): void {
     this.sseClient
       .stream(`${this.baseUrl}/ordenes/status/${jobId}`, {
@@ -49,9 +72,37 @@ export class EventSourceService {
       })
       .subscribe({
         next: (event: any) => {
-          const data = JSON.parse(event.data);
-          this.acciones[data.status]?.(data);
-         
+          if (!event?.data) return;
+
+          try {
+            const data = JSON.parse(event.data);
+            console.log('here', event.data);
+            this.acciones[data.status]?.(data);
+          } catch (e) {
+            console.warn('Evento SSE no JSON válido:', event.data);
+          }
+        },
+        error: (err) => console.error('SSE error:', err),
+        complete: () => console.log('SSE stream completed'),
+      });
+  }
+  consultarInventario(jobId: string): void {
+    this.sseClient
+      .stream(`${this.baseUrl}/inventario/status/${jobId}`, {
+        keepAlive: false,
+        responseType: 'event',
+      })
+      .subscribe({
+        next: (event: any) => {
+          if (!event?.data) return;
+
+          try {
+            const data = JSON.parse(event.data);
+            console.log('here', event.data);
+            this.accionesInventario[data.status]?.(data);
+          } catch (e) {
+            console.warn('Evento SSE no JSON válido:', event.data);
+          }
         },
         error: (err) => console.error('SSE error:', err),
         complete: () => console.log('SSE stream completed'),
@@ -66,21 +117,28 @@ export class EventSourceService {
       })
       .subscribe({
         next: (event: any) => {
-          const data = JSON.parse(event.data);
-          console.log(data);
-           if (data.status === 'COMPLETADO') {
-            this.notificationService.addNotification(
-              'Reporte creado',
-              `Su reporte ha sido creado exitosamente.`,
-              'COMPLETADO'
-            );
-            this.pdfServices.descargarPdf(jobId).subscribe();
-          } else if (data.status === 'ERROR') {
-            this.notificationService.addNotification(
-              ` ${data.status}`,
-              data.mensaje,
-              'ERROR'
-            );
+          if (!event?.data) return;
+
+          try {
+            const data = JSON.parse(event.data);
+            console.log('here', event.data);
+
+            if (data.status === 'COMPLETADO') {
+              this.notificationService.addNotification(
+                'Reporte creado',
+                `Su reporte ha sido creado exitosamente.`,
+                'COMPLETADO'
+              );
+              this.pdfServices.getEncryptedPdf(jobId).subscribe();
+            } else if (data.status === 'ERROR') {
+              this.notificationService.addNotification(
+                `${data.status}`,
+                data.mensaje,
+                'ERROR'
+              );
+            }
+          } catch (e) {
+            console.warn('Evento SSE no JSON válido:', event.data);
           }
         },
         error: (err) => console.error('SSE error:', err),

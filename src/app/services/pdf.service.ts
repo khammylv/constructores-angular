@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { decryptPdf } from '../utils/crypto.util';
 
 @Injectable({
   providedIn: 'root',
@@ -26,4 +28,24 @@ export class PdfService {
       tap((blob) => this.pdfSubject.next(blob)) 
     );
   }
+   getEncryptedPdf(jobId: string) {
+    const key = environment.KEY as string;
+    const iv = environment.IV as string;
+    return this.http.get<{ file: string }>(`${this.baseurl}/descargar-cripto/${jobId}`).pipe(
+
+      tap(async response =>{
+        console.log(iv)
+        const decryptedBytes = await decryptPdf(response.file, key, iv);
+       const blob = new Blob([decryptedBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
+       this.pdfSubject.next(blob)
+      }) 
+    );
+  }
+
+  desencriptarPdf(){
+    console.log(environment);      
+    console.log(environment.KEY);
+  }
+
+  
 }

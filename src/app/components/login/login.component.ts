@@ -13,6 +13,7 @@ import { SnackbarService } from '../../services/snackbar.service';
 import { ERROR_CLASS, INFO_CLASS } from '../../utils/constans';
 import { LoginService } from '../../services/login.service';
 import { catchError, of, tap } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -27,11 +28,12 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private snackbar: SnackbarService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private authService : AuthService
   ) {}
 
   ngOnInit(): void {
-    console.log(this.loginForm);
+   
     this.loginForm = this.formBuilder.group({
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -52,16 +54,17 @@ export class LoginComponent implements OnInit {
     this.loginService.userLogin(this.loginForm.value).pipe(
       tap((data) => {
         
-        const isAutorizate = this.loginService.getUserRole(data.token);
+        const isAutorizate = this.authService.getUserRole(data.token);
        
-        isAutorizate ? this.router.navigate(["/admin"]): this.showSnackbarMessage( `Usuario no autorizado`, "error",ERROR_CLASS);
-        //this.router.navigate([isAdmin ? '/admin' : '/user']);
+        //isAutorizate ? this.router.navigate(["/user"]): this.showSnackbarMessage( `Usuario no autorizado`, "error",ERROR_CLASS);
+        this.router.navigate([isAutorizate ? '/user' : '/admin']);
       }),
       catchError(error => {
 
       
-        this.showSnackbarMessage( `Ha ocurrido un error`, "error",ERROR_CLASS);
+        this.showSnackbarMessage( `${error.error.error}`, "error",ERROR_CLASS);
         console.error(error);
+        console.log(error.error.error)
 
         return of(null);
       })

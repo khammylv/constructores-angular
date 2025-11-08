@@ -19,6 +19,7 @@ export class InputEmailComponent {
  @Input()  placeholder!: string;
   value: string = '';
   isValid: boolean = true;
+  @Input() exampleValue!: string;
 
   private onChange = (value: any) => {};
   private onTouched = () => {};

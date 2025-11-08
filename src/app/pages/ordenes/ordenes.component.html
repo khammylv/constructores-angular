@@ -9,13 +9,16 @@
             <span class="mr-3 font-semibold text-dark">Ordenes de construcción</span>
             <span class="mt-1 font-medium text-secondary-dark text-lg/normal">Todas las órdenes de construcción</span>
           </h3>
-          <div class="relative flex flex-wrap items-center my-2">
+          <ng-container *ngIf="isAdmin">
+            <div  class="relative flex flex-wrap items-center my-2">
 
             <button (click)="addOrden()"
               class="inline-block text-[.925rem] font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-150 ease-in-out text-white bg-blue-600/80 border-0 py-2 px-5 shadow hover:bg-blue-700 active:bg-blue-800 focus:ring-2 focus:ring-blue-400">
               Agregar orden
             </button>
           </div>
+          </ng-container>
+          
         </div>
         <ng-container *ngIf="ordenes">
           <div class="flex-auto block py-8 pt-6 px-9">
@@ -41,7 +44,7 @@
                     <!-- Tipo -->
                     <td class="p-3 text-start">
                       <span class=" text-light-inverse text-md/normal">
-                        {{ orden.tipo.nombre }}
+                        {{ orden.tipo.nombre  | capitalize }}
                       </span>
                     </td>
                     <!-- Solicitud -->

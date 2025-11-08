@@ -1,0 +1,34 @@
+<section>
+    <div class="flex justify-center mb-6">
+        <span class="inline-block bg-gray-200 rounded-full p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                    d="M21.67 18.17L13.5 10l1.41-1.41l-1.17-1.17l2.83-2.83l1.17 1.17L19 3.5L20.5 5l-3.25 3.25l1.17 1.17l-2.83 2.83l-1.17-1.17L10 13.5l8.17 8.17c.39.39 1.02.39 1.41 0l2.09-2.09c.4-.4.4-1.03 0-1.41M3 21v-3.75L12.06 8.19l3.75 3.75L6.75 21H3Z" />
+            </svg>
+
+        </span>
+    </div>
+    <h2 class="text-2xl font-semibold text-center mb-4">Reponer Materiales</h2>
+    <p class="text-gray-600 text-center mb-6">Ingrese aquí la cantidad a reponer.</p>
+    <form [formGroup]="formulario" (ngSubmit)="submitForm()">
+
+        <div *ngFor="let material of data.items">
+           
+            <app-input-decimal [placeholder]="material" exampleValue="Ej: 200"
+                [formControlName]="material"></app-input-decimal>
+        </div>
+
+        <div class="mb-2">
+
+
+        </div>
+
+
+        <button type="submit"
+            class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Aguegar
+            material</button>
+
+
+    </form>
+
+</section>

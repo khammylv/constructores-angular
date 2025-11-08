@@ -5,7 +5,7 @@
       type="text"
       inputmode="decimal"
       pattern="^-?\d{0,2}(\.\d{0,6})?$"
-      placeholder="Ej: 4.710989"
+      [placeholder]="exampleValue"
       [value]="text"
       (input)="onCoordenadaInput($event)"
       class="text-md block px-3 py-2 rounded-lg w-full

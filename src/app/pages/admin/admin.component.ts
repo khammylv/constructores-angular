@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SideMenuComponent } from '../../components/side-menu/side-menu.component';
 import { MenuItem } from '../../models/menuItems.model';
-import { MENU_ITEMS } from '../../utils/constans';
+import {  MENU_ITEMS_ADMIN } from '../../utils/constans';
 
 @Component({
   selector: 'app-admin',
@@ -12,6 +12,7 @@ import { MENU_ITEMS } from '../../utils/constans';
   styleUrl: './admin.component.css'
 })
 export class AdminComponent {
- menuItems: MenuItem[] = MENU_ITEMS;
+ menuItems: MenuItem[] = MENU_ITEMS_ADMIN;
+ isAdmin: boolean = true;
 
 }

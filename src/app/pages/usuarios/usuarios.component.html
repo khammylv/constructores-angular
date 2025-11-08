@@ -1,0 +1,74 @@
+<div class="px-9 pt-5 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
+  <h3 class="flex flex-col items-start justify-center m-2 ml-0 font-medium text-xl/tight text-dark">
+    <span class="mr-3 font-semibold text-dark">Tabla de usuarios</span>
+   
+  </h3>
+
+  <div class="relative flex flex-wrap items-center my-2">
+
+    <button (click)="addUser()"
+      class="inline-block text-[.925rem] font-medium leading-normal text-center align-middle cursor-pointer rounded-2xl transition-colors duration-150 ease-in-out text-white bg-blue-600/80 border-0 py-2 px-5 shadow hover:bg-blue-700 active:bg-blue-800 focus:ring-2 focus:ring-blue-400">
+      Agregar usuario
+    </button>
+  </div>
+
+
+</div>
+
+<div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
+
+
+
+  <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
+    <thead class="bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nombre</th>
+        <th scope="col" class="px-6 py-4 font-medium text-gray-900">Stado</th>
+        <th scope="col" class="px-6 py-4 font-medium text-gray-900">Role</th>
+
+        <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100 border-t border-gray-100">
+      <ng-container *ngIf="usuarios">
+        <tr class="hover:bg-gray-50" *ngFor="let user of usuarios">
+
+          <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
+
+            <div class="text-sm">
+              <div class="font-medium text-gray-700">{{user.nombre}}</div>
+              <div class="text-gray-400">{{user.username}}</div>
+            </div>
+          </th>
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold" [ngClass]="{
+      'bg-green-50 text-green-600': user.status === 'ACTIVO',
+      'bg-amber-50 text-amber-600': user.status === 'INACTIVO'
+    }">
+              <span class="h-1.5 w-1.5 rounded-full" [ngClass]="{
+        'bg-green-600': user.status === 'ACTIVO',
+        'bg-amber-600': user.status === 'INACTIVO'
+      }"></span>
+              {{ user.status | capitalize }}
+            </span>
+          </td>
+
+
+          <td class="px-6 py-4">{{user.rol | capitalize }}</td>
+
+          <td class="px-6 py-4">
+            <div class="flex justify-end gap-4">
+
+              <app-button-icon icon="edit" color="icon-warning" (clicked)="editUser(user)"></app-button-icon>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+
+
+
+
+
+    </tbody>
+  </table>
+</div>
